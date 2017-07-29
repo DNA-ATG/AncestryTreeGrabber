@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,14 +15,24 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+// JSoup
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+// TEST & DEBUG
 import android.widget.Toast;
 import android.util.Log;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";        // This CLASS name
     String ATG_Version = " ";           // initialize
+    String URL_OverView = "https://www.ancestry.com/family-tree/tree/";
     EditText editTxt_treeNum;
-    TextView txt_Desc, txt_HomePers, lbl_Desc, lbl_HomePers;
+    TextView txt_Desc, txt_HomePers, txt_People, lbl_Desc, lbl_HomePers, lbl_People;
     Button btn_Grab;
 
     @Override
@@ -44,12 +55,17 @@ public class MainActivity extends AppCompatActivity {
 
         txt_Desc = (TextView) findViewById(R.id.txt_Desc);
         txt_HomePers = (TextView) findViewById(R.id.txt_HomePers);
+        txt_People = (TextView) findViewById(R.id.txt_People);
         lbl_Desc = (TextView) findViewById(R.id.lbl_Desc);
         lbl_HomePers = (TextView) findViewById(R.id.lbl_HomePers);
+        lbl_People = (TextView) findViewById(R.id.lbl_People);
         txt_Desc.setVisibility(View.INVISIBLE);
         txt_HomePers.setVisibility(View.INVISIBLE);
+        txt_People.setVisibility(View.INVISIBLE);
         lbl_Desc.setVisibility(View.INVISIBLE);
         lbl_HomePers.setVisibility(View.INVISIBLE);
+        lbl_People.setVisibility(View.INVISIBLE);
+        txt_Desc.setMovementMethod(new ScrollingMovementMethod());
 
         Button btn_Grab = (Button) findViewById(R.id.btn_Grab);   // Listner defined in Layout XML
 //        button_View.setOnClickListener(btn_Grab_Click);
@@ -102,21 +118,62 @@ public class MainActivity extends AppCompatActivity {
 
 // Start Listeners
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-public void btn_Grab_Click(View view) {
-    Log.w(TAG, "*** btn_Grab Click ***");
-    txt_Desc.setVisibility(View.VISIBLE);
-    txt_HomePers.setVisibility(View.VISIBLE);
-    lbl_Desc.setVisibility(View.VISIBLE);
-    lbl_HomePers.setVisibility(View.VISIBLE);
+    public void btn_Grab_Click(View view) {
+        Log.w(TAG, "*** btn_Grab Click ***");
 
-    txt_Desc.setText(editTxt_treeNum.getText());
-
-}
+//        txt_Desc.setText(editTxt_treeNum.getText());
+        getWebsite();       // Get Website data
+    }
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+    private void getWebsite() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final StringBuilder builder = new StringBuilder();
+
+                try {
+                    Document doc = Jsoup.connect(URL_OverView + editTxt_treeNum.getText() + "/recent").get();
+                    Log.w(TAG, "URL + " + URL_OverView + editTxt_treeNum.getText() + "/recent");
+                    String title = doc.title();
+//                    Element tOview = doc.select("h2.conTitle").first();
+//                    Log.w(TAG, tOview + "\n");
+                    Elements links = doc.select("a[href]");
+
+                    builder.append(title).append("\n");
+
+                    for (Element link : links) {
+                        builder.append("\n").append("Link : ").append(link.attr("href"))
+                                .append("\n").append("Text : ").append(link.text());
+                    }
+                    builder.append("\n").append("********* END *********");
+                } catch (IOException e) {
+                    builder.append("Error : ").append(e.getMessage()).append("\n");
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        txt_Desc.setText(editTxt_treeNum.getText());
+                        txt_Desc.setText(builder.toString());
+                        txt_HomePers.setText("John Doe");
+                        txt_People.setText("1234");
+
+                        txt_Desc.setVisibility(View.VISIBLE);
+                        txt_HomePers.setVisibility(View.VISIBLE);
+                        txt_People.setVisibility(View.VISIBLE);
+                        lbl_Desc.setVisibility(View.VISIBLE);
+                        lbl_HomePers.setVisibility(View.VISIBLE);
+                        lbl_People.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        }).start();
+    }
 
 
-    //###################################################################
+
+//###################################################################
 //###################################################################
 //###################################################################
     @Override

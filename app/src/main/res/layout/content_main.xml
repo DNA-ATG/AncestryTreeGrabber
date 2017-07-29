@@ -14,7 +14,7 @@
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 
-        <ImageView
+    <ImageView
             android:id="@+id/img_Logo"
             android:layout_width="600dp"
             android:layout_height="100dp"
@@ -68,6 +68,7 @@
             android:textColor="@color/red"
             android:textSize="24sp"
             android:inputType="number"
+            android:textIsSelectable="true"
             android:background="@drawable/border"
             tools:layout_editor_absoluteX="131dp"
             tools:layout_editor_absoluteY="291dp"
@@ -100,35 +101,57 @@
 
         <TextView
             android:id="@+id/txt_Desc"
-            android:layout_width="wrap_content"
+            android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:text="Tree description blah, blah, blah ...."
             android:textColor="@color/green"
             android:textSize="16sp"
-            android:layout_marginTop="102dp"
-            android:layout_below="@+id/btn_Grab"
+            android:maxLines="5"
+            android:lines="5"
+            android:scrollbars = "vertical"
+            android:layout_below="@+id/lbl_Desc"
             android:layout_alignParentStart="true" />
 
         <TextView
             android:id="@+id/lbl_HomePers"
-            android:layout_width="120dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Home Person"
             android:textColor="@color/black"
             android:textSize="12sp"
-            android:layout_above="@+id/txt_HomePers"
-            android:layout_alignStart="@+id/txt_HomePers" />
+            android:layout_below="@+id/img_Logo"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:id="@+id/txt_HomePers"
-            android:layout_width="120dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Home Person"
             android:textColor="@color/green"
             android:textSize="16sp"
-            android:layout_alignBaseline="@+id/txt_Desc"
-            android:layout_alignBottom="@+id/txt_Desc"
+            android:layout_below="@+id/lbl_HomePers"
             android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/txt_People"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="0000"
+        android:textColor="@color/green"
+        android:textSize="16sp"
+        android:layout_alignBottom="@+id/txt_Desc"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/lbl_People"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="# People"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:layout_above="@+id/txt_People"
+        android:layout_alignParentEnd="true" />
+
 
 
 </RelativeLayout>
