@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.dnaadoption.ancestrytreegrabber.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+
+        <ImageView
+            android:id="@+id/img_Logo"
+            android:layout_width="600dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="334dp"
+            app:srcCompat="@drawable/atg_logo"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="1dp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="112dp"
+            android:text="AncestryTreeGrabber ©"
+            android:textColor="@color/darkgreen"
+            android:textSize="32sp"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="1dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/lbl_From"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="from DNA-Adoption.com"
+        android:textColor="@color/black"
+        android:textSize="10sp"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+            android:id="@+id/lbl_enterTree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Ancestry Tree # (from URL)"
+            android:textColor="@color/orange"
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="131dp"
+            tools:layout_editor_absoluteY="278dp"
+            android:layout_marginTop="82dp"
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true" />
+
+        <EditText
+            android:id="@+id/editTxt_treeNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:textColor="@color/red"
+            android:textSize="24sp"
+            android:inputType="number"
+            android:background="@drawable/border"
+            tools:layout_editor_absoluteX="131dp"
+            tools:layout_editor_absoluteY="291dp"
+            android:layout_below="@+id/lbl_enterTree"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:id="@+id/btn_Grab"
+            android:layout_width="88dp"
+            android:layout_height="wrap_content"
+            android:text="Grab"
+            android:onClick="btn_Grab_Click"
+            tools:layout_editor_absoluteX="281dp"
+            tools:layout_editor_absoluteY="291dp"
+            android:layout_alignBaseline="@+id/editTxt_treeNum"
+            android:layout_alignBottom="@+id/editTxt_treeNum"
+            android:layout_toEndOf="@+id/textView" />
+
+
+        <TextView
+            android:id="@+id/lbl_Desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tree Description"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:layout_alignBaseline="@+id/lbl_HomePers"
+            android:layout_alignBottom="@+id/lbl_HomePers"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/txt_Desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tree description blah, blah, blah ...."
+            android:textColor="@color/green"
+            android:textSize="16sp"
+            android:layout_marginTop="102dp"
+            android:layout_below="@+id/btn_Grab"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/lbl_HomePers"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Home Person"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:layout_above="@+id/txt_HomePers"
+            android:layout_alignStart="@+id/txt_HomePers" />
+
+        <TextView
+            android:id="@+id/txt_HomePers"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Home Person"
+            android:textColor="@color/green"
+            android:textSize="16sp"
+            android:layout_alignBaseline="@+id/txt_Desc"
+            android:layout_alignBottom="@+id/txt_Desc"
+            android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>
