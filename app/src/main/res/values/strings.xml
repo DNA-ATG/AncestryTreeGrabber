@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">AncestryTreeGrabber</string>
     <string name="action_settings">Settings</string>
+    <string name="action_about">About - ATG</string>
 
     <!-- -->
     <!-- @@@@@ COLORS @@@@@ -->

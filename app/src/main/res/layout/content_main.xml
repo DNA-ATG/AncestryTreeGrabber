@@ -56,9 +56,9 @@
             android:textSize="18sp"
             tools:layout_editor_absoluteX="131dp"
             tools:layout_editor_absoluteY="278dp"
-            android:layout_marginTop="82dp"
-            android:layout_below="@+id/textView"
-            android:layout_centerHorizontal="true" />
+            android:layout_marginTop="21dp"
+        android:layout_below="@+id/lbl_From"
+        android:layout_centerHorizontal="true" />
 
         <EditText
             android:id="@+id/editTxt_treeNum"
@@ -82,9 +82,8 @@
             android:text="Grab"
             android:onClick="btn_Grab_Click"
             tools:layout_editor_absoluteX="281dp"
-            tools:layout_editor_absoluteY="291dp"
-            android:layout_alignBaseline="@+id/editTxt_treeNum"
-            android:layout_alignBottom="@+id/editTxt_treeNum"
+            tools:layout_editor_absoluteY="271dp"
+            android:layout_alignTop="@+id/lbl_enterTree"
             android:layout_toEndOf="@+id/textView" />
 
 
@@ -95,8 +94,7 @@
             android:text="Tree Description"
             android:textColor="@color/black"
             android:textSize="12sp"
-            android:layout_alignBaseline="@+id/lbl_HomePers"
-            android:layout_alignBottom="@+id/lbl_HomePers"
+            android:layout_below="@+id/editTxt_treeNum"
             android:layout_alignParentStart="true" />
 
         <TextView
@@ -106,8 +104,8 @@
             android:text="Tree description blah, blah, blah ...."
             android:textColor="@color/green"
             android:textSize="16sp"
-            android:maxLines="5"
-            android:lines="5"
+            android:maxLines="4"
+            android:lines="4"
             android:scrollbars = "vertical"
             android:layout_below="@+id/lbl_Desc"
             android:layout_alignParentStart="true" />
@@ -119,8 +117,8 @@
             android:text="Home Person"
             android:textColor="@color/black"
             android:textSize="12sp"
-            android:layout_below="@+id/img_Logo"
-            android:layout_alignParentEnd="true" />
+            android:layout_above="@+id/txt_Desc"
+            android:layout_toEndOf="@+id/editTxt_treeNum" />
 
         <TextView
             android:id="@+id/txt_HomePers"
@@ -130,7 +128,7 @@
             android:textColor="@color/green"
             android:textSize="16sp"
             android:layout_below="@+id/lbl_HomePers"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignStart="@+id/lbl_HomePers" />
 
     <TextView
         android:id="@+id/txt_People"
@@ -151,6 +149,18 @@
         android:textSize="12sp"
         android:layout_above="@+id/txt_People"
         android:layout_alignParentEnd="true" />
+
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="240sp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:visibility="visible"
+        android:layout_marginTop="129dp"
+        android:layout_below="@+id/img_Logo"
+        android:layout_centerHorizontal="true" />
 
 
 
