@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -33,6 +34,7 @@ import org.jsoup.select.Elements;
 import android.widget.Toast;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, e.getMessage());
         }
+        preReqs();                        // Check for pre-requisites
+        
         Toast toast = Toast.makeText(getBaseContext(), "Ancestry Tree Grabber ©2017  Ver." + ATG_Version, Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
         toast.show();
@@ -98,16 +102,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
     }
 
+    private void preReqs() {
+        boolean isSdPresent;
+        isSdPresent = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+        Log.w(TAG, "SD card: " + isSdPresent);
+        if (isSdPresent) { 		// Make sure ATG directory is there
+            File extStore = Environment.getExternalStorageDirectory();
+            File directFRC = new File(Environment.getExternalStorageDirectory() + "/download/ATG");
+            if(!directFRC.exists())  {
+                if(directFRC.mkdir())
+                { }        //directory is created;
+            }
+            Log.w(TAG, "ATG file(s) created");
+        }  else {
+            Toast.makeText(getBaseContext(), "There is no SD card available", Toast.LENGTH_LONG).show();
+        }
+    }
+
+// #######################################################################
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -145,6 +167,9 @@ public class MainActivity extends AppCompatActivity {
         txt_People.setText(" ");        //
 
         getWebsite();       // Get Website data
+
+        Log.w(TAG, "*** back from Website ***");
+
     }
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -157,22 +182,22 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Document doc = Jsoup.connect(URL_OverView + editTxt_treeNum.getText() + "/recent").get();
                     Log.w(TAG, "URL = " + URL_OverView + editTxt_treeNum.getText() + "/recent");
-                    Element tOview = doc.select("header.conHeader").first();
-                    Log.w(TAG, tOview + "\n");
+//                    Element tOview = doc.select("header.conHeader").first();
+//                    Log.w(TAG, tOview + "\n");
                     String title = doc.title();
-                    Elements links = doc.select("h2");
+                    Elements links = doc.select("h2.conTitle");
 
                     builder.append(title).append("\n");
 
-                    for (Element link : links) {
-                        Log.w(TAG, "links " + link.text());
-                        builder.append("\n").append("Link : ").append(link.attr("href"))
-                                .append("\n").append("Text : ").append(link.text());
-                        if (link.text() == "Tree Overview") {
+                    for (Element conTitle : links) {
+                        Log.w(TAG, "Title " + conTitle.text());
+                        builder.append("\n").append("Text : ").append(conTitle.text());
+                        if (conTitle.text() == "Tree Overview") {
+                            Log.w(TAG, ">>>>>>>> Found It!!  <<<<<<<<");
 
                         }
                     }
-                    builder.append("\n").append("********* END *********");
+                    builder.append("\n").append("________________________________");
                     Home_Person = "John Doe";
                     HomPers_URL = "https://www.ancestry.com/family-tree/tree/16546820/person/1117640515";
                     Num_People = "1234";
@@ -189,19 +214,19 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-//                        txt_Desc.setText(editTxt_treeNum.getText());
-                        txt_Desc.setText(builder.toString());
-                        txt_HomePers.setText(Home_Person);
-                        txt_People.setText(Num_People);
+                    txt_Desc.setText(builder.toString());
+                    txt_HomePers.setText(Home_Person);
+                    txt_People.setText(Num_People);
 
-                        txt_Desc.setVisibility(View.VISIBLE);
-                        txt_HomePers.setVisibility(View.VISIBLE);
-                        txt_People.setVisibility(View.VISIBLE);
-                        lbl_Desc.setVisibility(View.VISIBLE);
-                        lbl_HomePers.setVisibility(View.VISIBLE);
-                        lbl_People.setVisibility(View.VISIBLE);
+                    txt_Desc.setVisibility(View.VISIBLE);
+                    txt_HomePers.setVisibility(View.VISIBLE);
+                    txt_People.setVisibility(View.VISIBLE);
+                    lbl_Desc.setVisibility(View.VISIBLE);
+                    lbl_HomePers.setVisibility(View.VISIBLE);
+                    lbl_People.setVisibility(View.VISIBLE);
+                    SystemClock.sleep(5000);        // Wait for them to see data
 
-                        Show_Alert();
+                    Show_Alert();
 
                     }
                 });
@@ -210,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void Show_Alert() {
+//        SystemClock.sleep(5000);        // Wait for them to see data
         AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
         alertbox.setMessage("Do you want to create a GEDCOM for this tree? (fees will apply)");
         alertbox.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
