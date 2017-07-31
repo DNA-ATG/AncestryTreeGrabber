@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     String Num_People = " ";
     EditText editTxt_treeNum;
     TextView txt_Desc, txt_HomePers, txt_People, lbl_Desc, lbl_HomePers, lbl_People;
-    Button btn_Grab;
+    Button btn_Grab, btn_GEDCOM;
     ProgressBar progressBar1;
 
     @Override
@@ -85,8 +85,11 @@ public class MainActivity extends AppCompatActivity {
         lbl_People.setVisibility(View.INVISIBLE);
         txt_Desc.setMovementMethod(new ScrollingMovementMethod());
 
-        Button btn_Grab = (Button) findViewById(R.id.btn_Grab);   // Listner defined in Layout XML
+        Button btn_Grab = (Button) findViewById(R.id.btn_Grab);         // Listner defined in Layout XML
 //        button_View.setOnClickListener(btn_Grab_Click);
+        Button btn_GEDCOM = (Button) findViewById(R.id.btn_GEDCOM);     // Listner defined in Layout XML
+//        button_View.setOnClickListener(btn_GEDCOM_Click);
+        btn_GEDCOM.setVisibility(View.GONE);
         editTxt_treeNum = (EditText) findViewById(R.id.editTxt_treeNum);
         editTxt_treeNum.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -161,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     public void btn_Grab_Click(View view) {
         Log.w(TAG, "*** btn_Grab Click ***");
+        Button btn_GEDCOM = (Button) findViewById(R.id.btn_GEDCOM);
 
         txt_Desc.setText(" ");          // clear data
         txt_HomePers.setText(" ");      //
@@ -169,69 +173,70 @@ public class MainActivity extends AppCompatActivity {
         getWebsite();       // Get Website data
 
         Log.w(TAG, "*** back from Website ***");
+        btn_GEDCOM.setVisibility(View.VISIBLE);
+    }
 
+    // --------------------------------------------------
+    public void btn_GEDCOM_Click(View view) {
+        Log.w(TAG, "@@@ btn_GEDCOM Click @@@");
+        Button btn_GEDCOM = (Button) findViewById(R.id.btn_GEDCOM);
+        Show_Alert();
+
+        btn_GEDCOM.setVisibility(View.GONE);
     }
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    private void getWebsite() {
+    private int getWebsite() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final StringBuilder builder = new StringBuilder();
-                try {
-                    Document doc = Jsoup.connect(URL_OverView + editTxt_treeNum.getText() + "/recent").get();
-                    Log.w(TAG, "URL = " + URL_OverView + editTxt_treeNum.getText() + "/recent");
-//                    Element tOview = doc.select("header.conHeader").first();
-//                    Log.w(TAG, tOview + "\n");
-                    String title = doc.title();
-                    Elements links = doc.select("h2.conTitle");
-
-                    builder.append(title).append("\n");
-
-                    for (Element conTitle : links) {
-                        Log.w(TAG, "Title " + conTitle.text());
-                        builder.append("\n").append("Text : ").append(conTitle.text());
-                        if (conTitle.text() == "Tree Overview") {
-                            Log.w(TAG, ">>>>>>>> Found It!!  <<<<<<<<");
-
-                        }
-                    }
-                    builder.append("\n").append("________________________________");
-                    Home_Person = "John Doe";
-                    HomPers_URL = "https://www.ancestry.com/family-tree/tree/16546820/person/1117640515";
-                    Num_People = "1234";
-
-
-        } catch (IOException e) {
-                builder.append("Error : Invalid Tree #").append("\n");
-                    builder.append("***** ").append(e.getMessage()).append("\n");
-                    Home_Person = "***";
-                    Num_People = "0";
-
+            final StringBuilder builder = new StringBuilder();
+            try {
+                Document doc = Jsoup.connect(URL_OverView + editTxt_treeNum.getText() + "/recent").get();
+                Log.w(TAG, "JSoup URL = " + URL_OverView + editTxt_treeNum.getText() + "/recent");
+//--------------------------------------------------------------------------------------------
+                Elements links = doc.select("a[href]");
+                for (Element link : links) {
+                    System.out.println(link.text() + "\n");
                 }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                    txt_Desc.setText(builder.toString());
-                    txt_HomePers.setText(Home_Person);
-                    txt_People.setText(Num_People);
+//_____________________________________________________________________________________________
+                builder.append("\n").append("________________________________");
 
-                    txt_Desc.setVisibility(View.VISIBLE);
-                    txt_HomePers.setVisibility(View.VISIBLE);
-                    txt_People.setVisibility(View.VISIBLE);
-                    lbl_Desc.setVisibility(View.VISIBLE);
-                    lbl_HomePers.setVisibility(View.VISIBLE);
-                    lbl_People.setVisibility(View.VISIBLE);
-                    SystemClock.sleep(5000);        // Wait for them to see data
+                Home_Person = "John Doe";
+                HomPers_URL = "https://www.ancestry.com/family-tree/tree/16546820/person/1117640515";
+                Num_People = "1234";
 
-                    Show_Alert();
 
-                    }
-                });
+    } catch (IOException e) {
+            builder.append("Error : Invalid Tree #").append("\n");
+                builder.append("***** ").append(e.getMessage()).append("\n");
+                Home_Person = "***";
+                Num_People = "0";
+
+            }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                txt_Desc.setText(builder.toString());
+                txt_HomePers.setText(Home_Person);
+                txt_People.setText(Num_People);
+
+                txt_Desc.setVisibility(View.VISIBLE);
+                txt_HomePers.setVisibility(View.VISIBLE);
+                txt_People.setVisibility(View.VISIBLE);
+                lbl_Desc.setVisibility(View.VISIBLE);
+                lbl_HomePers.setVisibility(View.VISIBLE);
+                lbl_People.setVisibility(View.VISIBLE);
+//                    SystemClock.sleep(5000);        // Wait for them to see data
+
+                }
+            });
             }
         }).start();
+        return 0;
     }
 
     private void Show_Alert() {
@@ -293,14 +298,16 @@ public class MainActivity extends AppCompatActivity {
         progress += 2;
         Log.w(TAG, "URL = " + HomPers_URL);
 
-//        Document tree = Jsoup.parse("UTF-8",HomPers_URL);
-//        Element content = tree.getElementById("content");
-//        Elements cards = content.getElementsByTag("h3");
-//        for (Element link : cards) {
-//            String linkHref = link.attr("class");
-//            String linkText = link.text();
-//        }
+        try {
+            Document tree = Jsoup.connect(HomPers_URL).get();
+            Elements links = tree.select("a[href]");
+            for (Element link : links) {
+                Log.w(TAG, " $$$$ Link " + link.text());
+            }
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for (int x = 0; x < 8; x++) {
             // ToDo - process all people in the tree
             SystemClock.sleep(1000);
