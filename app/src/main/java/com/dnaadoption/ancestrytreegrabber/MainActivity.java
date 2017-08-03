@@ -36,11 +36,14 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class MainActivity extends AppCompatActivity {
     String TAG = "MainActivity";        // This CLASS name
     String ATG_Version = " ";           // initialize
     String URL_OverView = "https://www.ancestry.com/family-tree/tree/";
+    String tree_Num;                    // Tree # entered
     String Home_Person = " ";
     String HomPers_URL = "";
     String Num_People = " ";
@@ -164,16 +167,16 @@ public class MainActivity extends AppCompatActivity {
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     public void btn_Grab_Click(View view) {
         Log.w(TAG, "*** btn_Grab Click ***");
-        Button btn_GEDCOM = (Button) findViewById(R.id.btn_GEDCOM);
 
+        tree_Num = String.valueOf(editTxt_treeNum.getText());
+        tree_Num = "16546820";                              // **DEBUG**
+        editTxt_treeNum.setText(tree_Num);                  // **DEBUG**
         txt_Desc.setText(" ");          // clear data
         txt_HomePers.setText(" ");      //
         txt_People.setText(" ");        //
 
         getWebsite();       // Get Website data
 
-        Log.w(TAG, "*** back from Website ***");
-        btn_GEDCOM.setVisibility(View.VISIBLE);
     }
 
     // --------------------------------------------------
@@ -188,18 +191,29 @@ public class MainActivity extends AppCompatActivity {
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     private int getWebsite() {
+        Log.w(TAG, ">>>  getWebsite  <<< " + tree_Num);
+        final Button btn_GEDCOM = (Button) findViewById(R.id.btn_GEDCOM);
         new Thread(new Runnable() {
             @Override
             public void run() {
             final StringBuilder builder = new StringBuilder();
+            String J_URL = URL_OverView + tree_Num + "/recent";
+            Log.w(TAG, "JSoup URL = " + J_URL);
+
             try {
-                Document doc = Jsoup.connect(URL_OverView + editTxt_treeNum.getText() + "/recent").get();
-                Log.w(TAG, "JSoup URL = " + URL_OverView + editTxt_treeNum.getText() + "/recent");
+                Document doc = Jsoup.connect(J_URL).get();
 //--------------------------------------------------------------------------------------------
-                Elements links = doc.select("a[href]");
-                for (Element link : links) {
-                    System.out.println(link.text() + "\n");
+//              Elements select = doc.select("table[width=80%] tr:has(td:matchesOwn(^Name:$)) td:eq(1)")
+                String srchCSS = "div.page";
+//                Elements select = doc.getElementsByIndexGreaterThan(0);
+                Elements select = doc.select(srchCSS);
+                Iterator<Element> iterator = select.iterator();
+                Log.w(TAG, "'" + srchCSS + "' # " + select.size());
+                while (iterator.hasNext()) {
+                    Element x = iterator.next();
+                    System.out.println("'" + srchCSS + "':  " + x.text());
                 }
+                Log.e(TAG, "%%% COMPLETE %%%");
 
 //_____________________________________________________________________________________________
                 builder.append("\n").append("________________________________");
@@ -214,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.append("***** ").append(e.getMessage()).append("\n");
                 Home_Person = "***";
                 Num_People = "0";
+                Log.e(TAG, "****  Error : Invalid URL  ****");
 
             }
 
@@ -231,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
                 lbl_HomePers.setVisibility(View.VISIBLE);
                 lbl_People.setVisibility(View.VISIBLE);
 //                    SystemClock.sleep(5000);        // Wait for them to see data
+                btn_GEDCOM.setVisibility(View.VISIBLE);
 
                 }
             });
@@ -299,11 +315,11 @@ public class MainActivity extends AppCompatActivity {
         Log.w(TAG, "URL = " + HomPers_URL);
 
         try {
-            Document tree = Jsoup.connect(HomPers_URL).get();
-            Elements links = tree.select("a[href]");
-            for (Element link : links) {
-                Log.w(TAG, " $$$$ Link " + link.text());
-            }
+            Document tree = Jsoup.connect(HomPers_URL).timeout(0).ignoreHttpErrors(true).get();
+            Element hPers = tree.getElementById("ctl05_ctl00_homePerson");
+            Log.w(TAG, "attr= " + hPers.attributes());
+            Log.w(TAG, "HTML= " + hPers.html());
+            Log.e(TAG, "HP= " + hPers.text());
 
         } catch (IOException e) {
             e.printStackTrace();
